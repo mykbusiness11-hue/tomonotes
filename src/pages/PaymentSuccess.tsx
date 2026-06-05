@@ -23,10 +23,15 @@ export default function PaymentSuccess() {
 
   useEffect(() => {
 
-    const paymentId =
-      searchParams.get(
-        'payment_id'
-      );
+   const paymentId =
+  searchParams.get('payment_id');
+
+const subscriptionId =
+  searchParams.get('subscription_id');
+
+console.log('paymentId:', paymentId);
+console.log('subscriptionId:', subscriptionId);
+console.log('full url:', window.location.href);
 
     if (!paymentId) {
 
@@ -35,7 +40,10 @@ export default function PaymentSuccess() {
       return;
 
     }
-
+console.log(
+  'About to fetch:',
+  `${import.meta.env.VITE_API_URL}/payment-result/${paymentId}`
+);
     fetch(
        `${import.meta.env.VITE_API_URL}/payment-result/${paymentId}`
     )
