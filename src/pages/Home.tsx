@@ -333,6 +333,30 @@ const PrivacySection = () => {
 };
 
 const PricingPreview = () => {
+
+const handleCheckout = async (
+  plan: 'yearly' | 'lifetime'
+) => {
+
+  const response = await fetch(
+    `${import.meta.env.VITE_API_URL}/create-checkout`,
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        plan,
+      }),
+    }
+  );
+
+  const data = await response.json();
+
+  window.location.href =
+    data.checkoutUrl;
+};
+
   const plans = [
     {
       name: 'Free',
@@ -458,16 +482,14 @@ const PricingPreview = () => {
                   </li>
                 ))}
               </ul>
-              <a
-  href={
-  plan.name === 'Yearly Pro'
-    ? import.meta.env.VITE_DODO_YEARLY_URL
-    : plan.name === 'Lifetime Pro'
-    ? import.meta.env.VITE_DODO_LIFETIME_URL
-    : '/download'
-}
-  target="_blank"
-  rel="noopener noreferrer"
+  <button
+  onClick={() =>
+    handleCheckout(
+      plan.name === 'Yearly Pro'
+        ? 'yearly'
+        : 'lifetime'
+    )
+  }
   className={`block w-full text-center py-3 rounded-xl font-medium transition-all ${
     plan.popular
       ? 'bg-white text-black hover:bg-white/90'
@@ -475,7 +497,7 @@ const PricingPreview = () => {
   }`}
 >
   {plan.button}
-</a>
+</button>
 
             </motion.div>
           ))}
