@@ -227,42 +227,87 @@ if (
 
       }
 
-      await supabase
-        .from('licenses')
-        .insert({
+      console.log(
+  'PLAN:',
+  plan
+);
 
-          payment_id:
-            paymentId,
+console.log(
+  'EXPIRES:',
+  expiresAt
+);
 
-          source:
-            'dodo',
+console.log(
+  'INSERTING LICENSE...'
+);
 
-          license_key:
-            licenseKey,
+     const {
+  data: inserted,
+  error,
+} = await supabase
+  .from('licenses')
+  .insert({
 
-          email,
+    payment_id:
+      paymentId,
 
-          plan,
+    source:
+      'dodo',
 
-          machine_id:
-            '',
+    license_key:
+      licenseKey,
 
-          expires_at:
-            expiresAt,
+    email,
 
-          activated_at:
-            null,
+    plan,
 
-          is_active:
-            true,
+    machine_id:
+      '',
 
-        });
+    expires_at:
+      expiresAt,
 
-      await sendLicenseEmail(
-        email,
-        licenseKey,
-        plan
-      );
+    activated_at:
+      null,
+
+    is_active:
+      true,
+
+  })
+  .select();
+
+console.log(
+  'INSERT RESULT:',
+  inserted
+);
+
+if (error) {
+
+  console.error(
+    'SUPABASE ERROR:',
+    error
+  );
+
+  return res.status(500)
+    .json({
+      success: false,
+    });
+
+}
+
+     console.log(
+  'ABOUT TO SEND EMAIL'
+);
+
+await sendLicenseEmail(
+  email,
+  licenseKey,
+  plan
+);
+
+console.log(
+  'EMAIL SENT'
+);
 
       console.log(
         'License created:',
