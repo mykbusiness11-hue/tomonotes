@@ -20,6 +20,9 @@ from './lib/supabase';
 import paymentResultRoute
 from './routes/payment-result'
 
+import createCheckout
+from './routes/create-checkout';
+
 dotenv.config();
 
 const app = express();
@@ -28,6 +31,10 @@ app.use(cors());
 
 app.use(express.json());
 
+app.use(
+  '/create-checkout',
+  createCheckout
+);
 /*
 LICENSE ACTIVATION
 */
