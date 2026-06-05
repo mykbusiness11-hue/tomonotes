@@ -13,18 +13,39 @@ router.get(
         paymentId,
       } = req.params;
 
+      let query =
+        supabase
+          .from('licenses')
+          .select(
+            'license_key, plan, email'
+          );
+
+      if (
+        paymentId.startsWith(
+          'sub_'
+        )
+      ) {
+
+        query =
+          query.eq(
+            'subscription_id',
+            paymentId
+          );
+
+      }
+      else {
+
+        query =
+          query.eq(
+            'payment_id',
+            paymentId
+          );
+
+      }
+
       const {
         data: license,
-      } = await supabase
-        .from('licenses')
-        .select(
-          'license_key, plan, email'
-        )
-        .eq(
-          'payment_id',
-          paymentId
-        )
-        .maybeSingle();
+      } = await query.maybeSingle();
 
       if (!license) {
 

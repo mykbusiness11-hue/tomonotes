@@ -46,16 +46,7 @@ router.post(
       const paymentId =
         payment?.payment_id;
 
-
-        console.log(
-  'paymentId:',
-  payment?.payment_id
-);
-
-console.log(
-  'subscriptionId:',
-  payment?.subscription_id
-);
+        
       const email =
         payment?.customer
           ?.email;
@@ -260,6 +251,8 @@ console.log(
 
     payment_id:
       paymentId,
+    subscription_id:
+    payment.subscription_id,
 
     source:
       'dodo',
