@@ -46,6 +46,8 @@ sendLicenseEmail(
   );
 
   try {
+    await transporter.verify();
+    console.log('SMTP VERIFIED');
 
     const result =
       await transporter.sendMail({
