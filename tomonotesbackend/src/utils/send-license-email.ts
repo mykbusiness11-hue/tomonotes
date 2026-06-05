@@ -2,15 +2,27 @@ import nodemailer from 'nodemailer';
 
 const transporter =
   nodemailer.createTransport({
+
     host:
       process.env.SMTP_HOST,
 
     port:
-      Number(
-        process.env.SMTP_PORT
-      ),
+      587,
 
-    secure: true,
+    secure:
+      false,
+
+    requireTLS:
+      true,
+
+    connectionTimeout:
+      10000,
+
+    greetingTimeout:
+      10000,
+
+    socketTimeout:
+      10000,
 
     auth: {
       user:
@@ -19,6 +31,7 @@ const transporter =
       pass:
         process.env.SMTP_PASS,
     },
+
   });
 
 export async function
@@ -35,7 +48,7 @@ sendLicenseEmail(
         process.env.SMTP_HOST,
 
       port:
-        process.env.SMTP_PORT,
+        587,
 
       user:
         process.env.SMTP_USER,
@@ -46,8 +59,10 @@ sendLicenseEmail(
   );
 
   try {
-    await transporter.verify();
-    console.log('SMTP VERIFIED');
+
+    console.log(
+      'ABOUT TO SEND EMAIL'
+    );
 
     const result =
       await transporter.sendMail({
@@ -55,15 +70,20 @@ sendLicenseEmail(
         from:
           `"TOMODesk" <${process.env.SMTP_USER}>`,
 
-        to: email,
+        to:
+          email,
 
         subject:
           'Your TOMONotes License Key',
 
         html: `
-          <h2>Thank you for purchasing TOMONotes</h2>
+          <h2>
+            Thank you for purchasing TOMONotes
+          </h2>
 
-          <p>Your license is ready.</p>
+          <p>
+            Your license is ready.
+          </p>
 
           <p>
             <strong>Plan:</strong>
