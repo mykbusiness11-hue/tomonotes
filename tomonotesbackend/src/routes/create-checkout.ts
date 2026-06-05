@@ -41,7 +41,7 @@ router.post(
           ],
 
           return_url:
-            'https://tomodeskapp.com/payment-success',
+  `${process.env.FRONTEND_URL}/payment-success`,
 
           feature_flags: {
             redirect_immediately:
