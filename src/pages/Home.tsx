@@ -460,12 +460,12 @@ const PricingPreview = () => {
               </ul>
               <a
   href={
-    plan.name === 'Yearly Pro'
-      ? 'https://checkout.dodopayments.com/buy/pdt_0NgJZb0J6NKnjmmBx3Yad?quantity=1'
-      : plan.name === 'Lifetime Pro'
-      ? 'https://checkout.dodopayments.com/buy/pdt_0NgJZFhojosERBM75iQok?quantity=1'
-      : '/download'
-  }
+  plan.name === 'Yearly Pro'
+    ? import.meta.env.VITE_DODO_YEARLY_URL
+    : plan.name === 'Lifetime Pro'
+    ? import.meta.env.VITE_DODO_LIFETIME_URL
+    : '/download'
+}
   target="_blank"
   rel="noopener noreferrer"
   className={`block w-full text-center py-3 rounded-xl font-medium transition-all ${
