@@ -50,9 +50,18 @@ router.post(
         payment?.customer
           ?.email;
 
-      const productId =
-        payment?.product_cart?.[0]
-          ?.product_id;
+     let productId =
+  payment.product_cart?.[0]
+    ?.product_id;
+
+if (
+  !productId &&
+  payment.subscription_id
+) {
+  productId =
+    process.env
+      .DODO_YEARLY_PRODUCT_ID!;
+}
 
       console.log(
         'paymentId:',
