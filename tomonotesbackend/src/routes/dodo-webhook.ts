@@ -1,16 +1,12 @@
 import { Router } from 'express';
 
-import { supabase }
-from '../lib/supabase';
+import { supabase } from '../lib/supabase';
 
-import { generateLicense }
-from '../utils/generate-license';
+import { generateLicense } from '../utils/generate-license';
 
-import { sendLicenseEmail }
-from '../utils/send-license-email';
+import { sendLicenseEmail } from '../utils/send-license-email';
 
-const router =
-  Router();
+const router = Router();
 
 router.post(
   '/',
@@ -18,14 +14,24 @@ router.post(
 
     try {
 
-      /*
-      ONLY SUCCESSFUL PAYMENTS
-      */
+      console.log(
+        'WEBHOOK RECEIVED:\n',
+        JSON.stringify(
+          req.body,
+          null,
+          2
+        )
+      );
 
       if (
         req.body.type !==
         'payment.succeeded'
       ) {
+
+        console.log(
+          'Ignoring event:',
+          req.body.type
+        );
 
         return res.status(200)
           .json({
@@ -38,15 +44,30 @@ router.post(
         req.body.data;
 
       const paymentId =
-        payment.payment_id;
+        payment?.payment_id;
 
       const email =
-        payment.customer
+        payment?.customer
           ?.email;
 
       const productId =
-        payment.product_cart?.[0]
+        payment?.product_cart?.[0]
           ?.product_id;
+
+      console.log(
+        'paymentId:',
+        paymentId
+      );
+
+      console.log(
+        'email:',
+        email
+      );
+
+      console.log(
+        'productId:',
+        productId
+      );
 
       if (
         !paymentId ||
@@ -54,19 +75,21 @@ router.post(
         !productId
       ) {
 
+        console.log(
+          'Missing required data'
+        );
+
         return res.status(400)
           .json({
             success: false,
+            message:
+              'Missing payment data',
           });
 
       }
 
-      /*
-      DUPLICATE WEBHOOK
-      */
-
       const {
-        data: existing
+        data: existing,
       } = await supabase
         .from('licenses')
         .select('id')
@@ -78,16 +101,16 @@ router.post(
 
       if (existing) {
 
+        console.log(
+          'Duplicate webhook'
+        );
+
         return res.status(200)
           .json({
             success: true,
           });
 
       }
-
-      /*
-      DETERMINE PLAN
-      */
 
       const yearlyId =
         process.env
@@ -97,59 +120,78 @@ router.post(
         process.env
           .DODO_LIFETIME_PRODUCT_ID;
 
-      let plan =
-        '';
+      console.log(
+        'ENV yearlyId:',
+        yearlyId
+      );
+
+      console.log(
+        'ENV lifetimeId:',
+        lifetimeId
+      );
+
+      let plan = '';
 
       let expiresAt:
-  string | null =
-  null;
+        string | null =
+        null;
 
-     if (
-  productId ===
-  yearlyId
-) {
+      if (
+        productId ===
+        yearlyId
+      ) {
 
-  plan =
-    'yearly';
+        plan = 'yearly';
 
-  expiresAt =
-    new Date(
-      Date.now() +
-      365 *
-      24 *
-      60 *
-      60 *
-      1000
-    ).toISOString();
+        expiresAt =
+          new Date(
+            Date.now() +
+            365 *
+            24 *
+            60 *
+            60 *
+            1000
+          ).toISOString();
 
-}
-else if (
-  productId ===
-  lifetimeId
-) {
+      }
+      else if (
+        productId ===
+        lifetimeId
+      ) {
 
-  plan =
-    'lifetime';
+        plan =
+          'lifetime';
 
-  expiresAt =
-    null;
-
-}
+      }
       else {
+
+        console.log(
+          'UNKNOWN PRODUCT'
+        );
+
+        console.log(
+          'Received:',
+          productId
+        );
+
+        console.log(
+          'Expected Yearly:',
+          yearlyId
+        );
+
+        console.log(
+          'Expected Lifetime:',
+          lifetimeId
+        );
 
         return res.status(400)
           .json({
             success: false,
-
             message:
               'Unknown product',
           });
 
       }
-
-      /*
-      GENERATE UNIQUE LICENSE
-      */
 
       let licenseKey =
         '';
@@ -160,7 +202,7 @@ else if (
           generateLicense();
 
         const {
-          data
+          data,
         } = await supabase
           .from('licenses')
           .select('id')
@@ -175,10 +217,6 @@ else if (
         }
 
       }
-
-      /*
-      INSERT LICENSE
-      */
 
       await supabase
         .from('licenses')
@@ -211,14 +249,15 @@ else if (
 
         });
 
-      /*
-      SEND EMAIL
-      */
-
       await sendLicenseEmail(
         email,
         licenseKey,
         plan
+      );
+
+      console.log(
+        'License created:',
+        licenseKey
       );
 
       return res.status(200)
@@ -230,6 +269,7 @@ else if (
     catch (error) {
 
       console.error(
+        'WEBHOOK ERROR:',
         error
       );
 
