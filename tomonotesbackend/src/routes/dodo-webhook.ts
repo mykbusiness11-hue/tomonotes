@@ -299,7 +299,7 @@ if (error) {
   'ABOUT TO SEND EMAIL'
 );
 
-await sendLicenseEmail(
+sendLicenseEmail(
   email,
   licenseKey,
   plan

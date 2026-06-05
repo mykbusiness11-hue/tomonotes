@@ -1,38 +1,9 @@
-import nodemailer from 'nodemailer';
+import { Resend } from 'resend';
 
-const transporter =
-  nodemailer.createTransport({
-
-    host:
-      process.env.SMTP_HOST,
-
-    port:
-      587,
-
-    secure:
-      false,
-
-    requireTLS:
-      true,
-
-    auth: {
-      user:
-        process.env.SMTP_USER,
-
-      pass:
-        process.env.SMTP_PASS,
-    },
-
-    connectionTimeout:
-      15000,
-
-    greetingTimeout:
-      15000,
-
-    socketTimeout:
-      15000,
-
-  });
+const resend =
+  new Resend(
+    process.env.RESEND_API_KEY
+  );
 
 export async function
 sendLicenseEmail(
@@ -41,34 +12,17 @@ sendLicenseEmail(
   plan: string
 ) {
 
-  console.log(
-    'SMTP CONFIG',
-    {
-      host:
-        process.env.SMTP_HOST,
-
-      port:
-        587,
-
-      user:
-        process.env.SMTP_USER,
-
-      passExists:
-        !!process.env.SMTP_PASS,
-    }
-  );
-
   try {
 
     console.log(
-      'ABOUT TO SEND EMAIL'
+      'SENDING EMAIL VIA RESEND'
     );
 
     const result =
-      await transporter.sendMail({
+      await resend.emails.send({
 
         from:
-          `"TOMODesk" <${process.env.SMTP_USER}>`,
+          'TOMODesk <noreply@tomodeskapp.com>',
 
         to:
           email,
@@ -119,7 +73,6 @@ sendLicenseEmail(
     );
 
     console.log(
-      'EMAIL RESULT:',
       result
     );
 
@@ -130,8 +83,6 @@ sendLicenseEmail(
       'EMAIL ERROR:',
       error
     );
-
-    throw error;
 
   }
 
