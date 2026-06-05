@@ -27,11 +27,16 @@ export default function PaymentSuccess() {
   searchParams.get('payment_id') ||
   searchParams.get('subscription_id');
 
+  console.log('paymentId:', paymentId);
+
 if (!paymentId) {
   setLoading(false);
   return;
 }
-
+console.log(
+  'About to fetch:',
+  `${import.meta.env.VITE_API_URL}/payment-result/${paymentId}`
+);
     fetch(
        `${import.meta.env.VITE_API_URL}/payment-result/${paymentId}`
     )
