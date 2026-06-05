@@ -37,7 +37,7 @@ export default function PaymentSuccess() {
     }
 
     fetch(
-      `http://localhost:3001/payment-result/${paymentId}`
+       `${import.meta.env.VITE_API_URL}/payment-result/${paymentId}`
     )
       .then((r) => r.json())
       .then((data) => {
