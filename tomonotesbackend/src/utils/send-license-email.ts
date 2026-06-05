@@ -28,46 +28,89 @@ sendLicenseEmail(
   plan: string
 ) {
 
-  await transporter.sendMail({
-    from:
-      `"TOMODesk" <${process.env.SMTP_USER}>`,
+  console.log(
+    'SMTP CONFIG',
+    {
+      host:
+        process.env.SMTP_HOST,
 
-    to: email,
+      port:
+        process.env.SMTP_PORT,
 
-    subject:
-      'Your TOMONotes License Key',
+      user:
+        process.env.SMTP_USER,
 
-    html: `
-      <h2>Thank you for purchasing TOMONotes</h2>
+      passExists:
+        !!process.env.SMTP_PASS,
+    }
+  );
 
-      <p>Your license is ready.</p>
+  try {
 
-      <p>
-        <strong>Plan:</strong>
-        ${plan}
-      </p>
+    const result =
+      await transporter.sendMail({
 
-      <p>
-        <strong>License Key:</strong>
-        ${licenseKey}
-      </p>
+        from:
+          `"TOMODesk" <${process.env.SMTP_USER}>`,
 
-      <p>
-        Download:
-        https://tomodeskapp.com
-      </p>
+        to: email,
 
-      <p>
-        Open TOMONotes →
-        Activate License →
-        Paste the key above.
-      </p>
+        subject:
+          'Your TOMONotes License Key',
 
-      <br />
+        html: `
+          <h2>Thank you for purchasing TOMONotes</h2>
 
-      <p>
-        TOMODesk Team
-      </p>
-    `,
-  });
+          <p>Your license is ready.</p>
+
+          <p>
+            <strong>Plan:</strong>
+            ${plan}
+          </p>
+
+          <p>
+            <strong>License Key:</strong>
+            ${licenseKey}
+          </p>
+
+          <p>
+            Download:
+            https://tomodeskapp.com
+          </p>
+
+          <p>
+            Open TOMONotes →
+            Activate License →
+            Paste the key above.
+          </p>
+
+          <br />
+
+          <p>
+            TOMODesk Team
+          </p>
+        `,
+      });
+
+    console.log(
+      'EMAIL SENT SUCCESSFULLY'
+    );
+
+    console.log(
+      'EMAIL RESULT:',
+      result
+    );
+
+  }
+  catch (error) {
+
+    console.error(
+      'EMAIL ERROR:',
+      error
+    );
+
+    throw error;
+
+  }
+
 }
