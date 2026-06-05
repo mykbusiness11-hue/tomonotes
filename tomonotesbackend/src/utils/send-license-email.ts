@@ -15,15 +15,6 @@ const transporter =
     requireTLS:
       true,
 
-    connectionTimeout:
-      10000,
-
-    greetingTimeout:
-      10000,
-
-    socketTimeout:
-      10000,
-
     auth: {
       user:
         process.env.SMTP_USER,
@@ -31,6 +22,15 @@ const transporter =
       pass:
         process.env.SMTP_PASS,
     },
+
+    connectionTimeout:
+      15000,
+
+    greetingTimeout:
+      15000,
+
+    socketTimeout:
+      15000,
 
   });
 
