@@ -23,48 +23,108 @@ export default function PaymentSuccess() {
 
   useEffect(() => {
 
-  const paymentId =
-  searchParams.get('payment_id') ||
-  searchParams.get('subscription_id');
+    const paymentId =
+      searchParams.get(
+        'payment_id'
+      ) ||
+      searchParams.get(
+        'subscription_id'
+      );
 
-  console.log('paymentId:', paymentId);
+    console.log(
+      'paymentId:',
+      paymentId
+    );
 
-if (!paymentId) {
-  setLoading(false);
-  return;
-}
-console.log(
-  'About to fetch:',
-  `${import.meta.env.VITE_API_URL}/payment-result/${paymentId}`
-);
-    fetch(
-       `${import.meta.env.VITE_API_URL}/payment-result/${paymentId}`
-    )
-      .then((r) => r.json())
-      .then((data) => {
+    if (!paymentId) {
 
-        if (data.success) {
+      setLoading(false);
 
-          setLicense(
-            data.licenseKey
+      return;
+
+    }
+
+    const fetchLicense =
+      async (
+        retries = 10
+      ) => {
+
+        try {
+
+          console.log(
+            'About to fetch:',
+            `${import.meta.env.VITE_API_URL}/payment-result/${paymentId}`
           );
 
-          setEmail(
-            data.email
+          const response =
+            await fetch(
+              `${import.meta.env.VITE_API_URL}/payment-result/${paymentId}`
+            );
+
+          const data =
+            await response.json();
+
+          console.log(
+            'API RESPONSE:',
+            data
           );
 
-          setPlan(
-            data.plan
+          if (
+            data.success
+          ) {
+
+            setLicense(
+              data.licenseKey
+            );
+
+            setEmail(
+              data.email
+            );
+
+            setPlan(
+              data.plan
+            );
+
+            setLoading(
+              false
+            );
+
+            return;
+
+          }
+
+        }
+        catch (error) {
+
+          console.error(
+            error
           );
 
         }
 
-      })
-      .finally(() => {
+        if (
+          retries > 0
+        ) {
 
-        setLoading(false);
+          setTimeout(
+            () =>
+              fetchLicense(
+                retries - 1
+              ),
+            2000
+          );
 
-      });
+          return;
+
+        }
+
+        setLoading(
+          false
+        );
+
+      };
+
+    fetchLicense();
 
   }, []);
 
@@ -91,7 +151,7 @@ console.log(
 
     return (
       <div className="min-h-screen flex items-center justify-center text-white">
-        Loading...
+        Finalizing your purchase...
       </div>
     );
 
