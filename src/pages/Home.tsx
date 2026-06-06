@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import { useState } from 'react';
 import {
   Eye,
   EyeOff,
@@ -332,31 +333,60 @@ const PrivacySection = () => {
   );
 };
 
+
 const PricingPreview = () => {
+  const [checkoutLoading,
+  setCheckoutLoading] =
+  useState<string | null>(
+    null
+  );
 
 const handleCheckout = async (
   plan: 'yearly' | 'lifetime'
 ) => {
 
-  const response = await fetch(
-    `${import.meta.env.VITE_API_URL}/create-checkout`,
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        plan,
-      }),
-    }
+  setCheckoutLoading(
+    plan
   );
 
-  const data = await response.json();
+  try {
 
-  window.location.href =
-    data.checkoutUrl;
+    const response =
+      await fetch(
+        `${import.meta.env.VITE_API_URL}/create-checkout`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type':
+              'application/json',
+          },
+          body:
+            JSON.stringify({
+              plan,
+            }),
+        }
+      );
+
+    const data =
+      await response.json();
+
+    window.location.href =
+      data.checkoutUrl;
+
+  }
+  catch (error) {
+
+    console.error(
+      error
+    );
+
+    setCheckoutLoading(
+      null
+    );
+
+  }
+
 };
-
   const plans = [
     {
       name: 'Free',
@@ -483,6 +513,9 @@ const handleCheckout = async (
                 ))}
               </ul>
   <button
+  disabled={
+    checkoutLoading !== null
+  }
   onClick={() =>
     handleCheckout(
       plan.name === 'Yearly Pro'
@@ -494,9 +527,18 @@ const handleCheckout = async (
     plan.popular
       ? 'bg-white text-black hover:bg-white/90'
       : 'glass hover:bg-white/10'
+  } ${
+    checkoutLoading !== null
+      ? 'opacity-70 cursor-not-allowed'
+      : ''
   }`}
 >
-  {plan.button}
+  {(checkoutLoading === 'yearly' &&
+    plan.name === 'Yearly Pro') ||
+   (checkoutLoading === 'lifetime' &&
+    plan.name === 'Lifetime Pro')
+    ? '⏳ Preparing secure checkout...'
+    : plan.button}
 </button>
 
             </motion.div>
