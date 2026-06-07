@@ -43,6 +43,22 @@ app.use(
   activateLicenseRoute
 );
 
+
+app.use(express.json());
+
+app.get(
+  '/version.json',
+  (req, res) => {
+
+    res.json({
+      version: '1.0.0',
+      downloadUrl:
+        'https://tomodeskapp.com/download'
+    });
+
+  }
+);
+
 /*
 TRIAL STATUS
 */
