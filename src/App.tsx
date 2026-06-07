@@ -7,6 +7,7 @@ import Privacy from './pages/Privacy';
 import Layout from './components/Layout';
 import PaymentSuccess from './pages/PaymentSuccess';
 
+
 function App() {
   return (
     <Router>
