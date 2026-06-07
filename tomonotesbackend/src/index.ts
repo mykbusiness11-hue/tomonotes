@@ -59,6 +59,19 @@ app.get(
   }
 );
 
+//download
+app.get('/download-app', (req, res) => {
+  const downloadUrl =
+    process.env.DOWNLOAD_URL;
+
+  if (!downloadUrl) {
+    return res
+      .status(500)
+      .send('Download URL not configured');
+  }
+
+  res.redirect(downloadUrl);
+});
 /*
 TRIAL STATUS
 */

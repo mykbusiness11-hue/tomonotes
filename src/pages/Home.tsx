@@ -73,13 +73,13 @@ const HeroSection = () => {
           transition={{ duration: 0.5, delay: 0.3 }}
           className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-10"
         >
-          <Link
-            to="/download"
-            className="group flex items-center gap-2 px-6 py-3 rounded-lg bg-white text-brand-black font-medium hover:bg-white/90 transition-all duration-200"
-          >
-            <Download className="w-4 h-4" />
-            Download for Windows
-          </Link>
+        <a
+  href={`${import.meta.env.VITE_API_URL_DOWNLOAD}`}
+  className="group flex items-center gap-2 px-6 py-3 rounded-lg bg-white text-brand-black font-medium hover:bg-white/90 transition-all duration-200"
+>
+  <Download className="w-4 h-4" />
+  Download for Windows
+</a>
          
         </motion.div>
 
@@ -567,13 +567,13 @@ const FinalCTA = () => {
             Your workspace should stay yours.
           </h2>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link
-              to="/download"
-              className="group flex items-center gap-2 px-6 py-3 rounded-lg bg-white text-brand-black font-medium hover:bg-white/90 transition-all"
-            >
-              <Download className="w-4 h-4" />
-              Download TOMONotes
-            </Link>
+       <a
+         href={`${import.meta.env.VITE_API_URL}`}
+        className="group flex items-center gap-2 px-6 py-3 rounded-lg bg-white text-brand-black font-medium hover:bg-white/90 transition-all duration-200"
+      >
+        <Download className="w-4 h-4" />
+        Download for Windows
+      </a>
            
           </div>
         </motion.div>
