@@ -516,13 +516,23 @@ const handleCheckout = async (
   disabled={
     checkoutLoading !== null
   }
-  onClick={() =>
+  onClick={() => {
+
+    if (plan.name === 'Free') {
+
+      window.location.href =
+        import.meta.env
+          .VITE_API_URL_DOWNLOAD;
+
+      return;
+    }
+
     handleCheckout(
       plan.name === 'Yearly Pro'
         ? 'yearly'
         : 'lifetime'
-    )
-  }
+    );
+  }}
   className={`block w-full text-center py-3 rounded-xl font-medium transition-all ${
     plan.popular
       ? 'bg-white text-black hover:bg-white/90'
