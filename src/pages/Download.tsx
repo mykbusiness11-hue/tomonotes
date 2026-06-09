@@ -4,7 +4,7 @@ import { Download, Shield, Monitor, Zap, Lock } from 'lucide-react';
 const DownloadPage = () => {
   const handleDownload = () => {
   window.location.href =
-    `${import.meta.env.VITE_API_URL}`;
+    `${import.meta.env.VITE_API_URL_DOWNLOAD}`;
 };
 
   return (
