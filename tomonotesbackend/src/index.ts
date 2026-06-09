@@ -104,27 +104,13 @@ app.use(
 /*
 HEALTH CHECK
 */
-app.get(
-  '/',
-  async (_, res) => {
-
-    const {
-      data,
-      error,
-    } = await supabase
-      .from('licenses')
-      .select('*')
-      .limit(5);
-
-    res.json({
-      success: true,
-      data,
-      error,
-    });
-
-  }
-);
-
+app.get('/', (_, res) => {
+  res.json({
+    service: 'TOMONotes API',
+    status: 'online',
+    version: '1.0.0',
+  });
+});
 const PORT =
   process.env.PORT || 3001;
 
