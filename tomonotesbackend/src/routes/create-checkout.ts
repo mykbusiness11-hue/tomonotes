@@ -10,8 +10,8 @@ const client =
       process.env.DODO_API_KEY!,
 
     environment:
-      'test_mode',
-
+      process.env.DODO_ENVIRONMENT as
+        'test_mode' | 'live_mode',
   });
 
 router.post(
